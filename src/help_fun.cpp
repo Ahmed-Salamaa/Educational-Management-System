@@ -30,7 +30,7 @@ string read_string ()
         getline( cin , temp ) ;
         if ( !temp.empty() ) return temp ;
 
-        cout << "Not valid string value\n" ;
+        cout << "Invalid input. Please enter a valid string.\n" ;
     }
     return temp ;
 }
@@ -73,7 +73,7 @@ int read_int ()
             // stoi failed
         }
         
-        cout << "Not integer value. Please try again: " ;
+        cout << "Invalid integer value. Please try again: " ;
     }
 }
 
@@ -89,7 +89,7 @@ int read_int ( int min_ , int max_ )
 
     while ( !( min_ <= temp && temp <= max_ ) )
     {
-        cout << "The number must be in range {" << min_ << "  , " << max_ << "}\n" ;
+        cout << "The number must be in range [" << min_ << ", " << max_ << "]. Please try again.\n" ;
         temp = read_int() ;
     }
     
@@ -113,7 +113,7 @@ string read_username ()
     string username ;
     while ( true )
     {
-        username = read_string( "Enter The User Name (-1 to exit): " ) ;
+        username = read_string( "Enter Username (-1 to exit): " ) ;
         if ( username == "-1" ) return "" ;
         if ( !username.empty() ) return username;
         cout << "Username cannot be empty. Please try again.\n";
@@ -124,7 +124,7 @@ string read_password ()
     string password ;
     while ( true )
     {
-        password = read_string( "Enter The Password (-1 to exit): " ) ;
+        password = read_string( "Enter Password (-1 to exit): " ) ;
         if ( password == "-1" ) return "" ;
         if ( !password.empty() ) return password;
         cout << "Password cannot be empty. Please try again.\n";
@@ -136,7 +136,7 @@ string read_email ()
     string email ;
     while ( true )
     {
-        email = read_string( "Enter The Email (-1 to exit): " ) ;
+        email = read_string( "Enter Email (-1 to exit): " ) ;
         if ( email == "-1" ) return "" ;
         if ( vaild_email ( email ) ) return email ;
         cout << "Incorrect Email format. Please try again.\n" ;
@@ -187,13 +187,10 @@ int read_creditHoure ()
 
 int print_menu ( const vector <string> & menu )
 {
-    cout << "\n=== Menu ===\n" ;
+    cout << "\n=============== MENU ===============\n" ;
     int n = menu.size() ;
     for ( int i = 0 ; i < n ; i++ ) 
         cout << "\t" << i + 1 << ". " << menu[i] << "\n" ;
     cout << "============\n" ;
-    return read_int( "Select your operation: " , 1 , n ) ;
+        return read_int( "Select your operation: " , 1 , n ) ;
 }
-
-// Ensure all pointers are initialized to nullptr and check before dereferencing
-

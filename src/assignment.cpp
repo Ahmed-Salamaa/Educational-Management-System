@@ -23,10 +23,10 @@ int Assignment::read_id ()
     int id ;
     while ( true )
     {
-        id = read_int ( "Enter Assignment ID : " ) ;
+        id = read_int ( "Enter Assignment ID: " ) ;
         if ( id == -1 ) return -1 ;
         if ( Assignment::used_id( id ) ) break;
-        cout << "Invaild ID. Please try again.\n" ;
+        cout << "Invalid Assignment ID. Please try again.\n" ;
     }
     return id ;
 }
@@ -89,14 +89,30 @@ void Assignment::delete_User ( User * ptr )
 
 void Assignment::print_assignment ()
 {
-    cout << " Q : " << question << "\n" ;
+    cout << "\n================ ASSIGNMENT DETAILS ================\n" ;
+    cout << "Question: " << question << "\n" ;
+    cout << "Maximum Degree: " << degree << "\n" ;
+    cout << "===================================================\n" ;
 
-   for ( const auto & [ id , ans ] : answers )
-   {
-        cout << "\tSt ID : " << id << "\n" ; 
-        cout << "\tSt An : " << ( ans.first.empty() ? "No Answer Yet" : ans.first ) << "\n" ;
-        cout << "\t Degree : " <<  ans.second << " / " << degree << "\n" ;
-   }
+    if ( answers.empty() )
+    {
+        cout << "No student submissions yet.\n" ;
+    }
+    else
+    {
+        cout << "Total Submissions: " << answers.size() << "\n" ;
+        cout << "---------------------------------------------------\n" ;
+
+        for ( const auto & [ id , ans ] : answers )
+        {
+            cout << "Student ID: " << id << "\n" ; 
+            cout << "Answer: " << ( ans.first.empty() ? "No Answer Yet" : ans.first ) << "\n" ;
+            cout << "Score: " <<  ans.second << " / " << degree << "\n" ;
+            cout << "---------------------------------------------------\n" ;
+        }
+    }
+    
+    cout << "===================================================\n" ;
 }
 
 void Assignment::Give_degree ( int user_id , int degree )
@@ -112,7 +128,7 @@ int Assignment::read_user_id()
         id = User::read_id() ;
         if ( id == -1 ) return -1 ;
         if ( answers.count(id) ) break;
-        cout << "Student Dosen't submitted an Answer. Please try again.\n" ;
+        cout << "Student has not submitted an answer. Please try again.\n" ;
     }
     return id ;
 }
@@ -123,9 +139,9 @@ void Assignment::menu ( )
     {
         "Edit Question" ,
         "Edit Degree" ,
-        "Review Stiudent Answers" ,
+        "Review Student Answers" ,
         "Delete Assignment" ,
-        "Return to Main menu"
+        "Return to Main Menu"
     } ;
 
     int type = print_menu( menu ) ;
@@ -134,19 +150,21 @@ void Assignment::menu ( )
     {
     case 1:
     {
-        string question = read_string( "Enter the question : " ) ;
+        string question = read_string( "Enter the question: " ) ;
         if ( question == "-1" ) return ;
 
         change_question( question ) ;
-
+        cout << "Assignment question updated successfully.\n" ;
         break;
     }
     case 2:
     {
-        int degree = read_int( "Enter the degree at range ( 1 , 100 ) : " , 1 , 100 ) ;
+        int degree = read_int( "Enter the degree in range (1, 100): " , 1 , 100 ) ;
         if ( degree == -1 ) return ;
 
         change_degree( degree ) ;
+        cout << "Assignment degree updated successfully.\n" ;
+        break;
     }
     case 3:
     {
@@ -154,10 +172,12 @@ void Assignment::menu ( )
         int id = read_user_id() ;
         if ( id == -1 ) return ;
         
-        int degree = read_int( "Enter the degree : " , 1 , this->degree ) ;
+        int degree = read_int( "Enter the degree: " , 1 , this->degree ) ;
         if ( degree == -1 ) return ;
 
         Give_degree( id , degree ) ;
+        cout << "Student grade updated successfully.\n" ;
+        break;
     }
     
         
@@ -185,8 +205,8 @@ void Assignment::print_self ( User * user_ptr )
         auto it = answers.find( user_ptr->get_id() ) ;
         if ( it != answers.end() )
         {
-            cout << "    Your Answer : " << it->second.first ;
-            cout << " | Degree : " << it->second.second << " / " << degree << "\n" ;
+            cout << "    Your Answer: " << it->second.first ;
+            cout << " | Score: " << it->second.second << " / " << degree << "\n" ;
         }
         else 
         {

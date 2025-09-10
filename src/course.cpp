@@ -26,10 +26,10 @@ int Course::read_id ()
     int id ;
     while ( true )
     {
-        id = read_int ( "Enter Course ID : " ) ;
+        id = read_int ( "Enter Course ID: " ) ;
         if ( id == -1 ) return -1 ;
         if ( Course::used_id( id ) ) break;
-        cout << "Invaild ID. Please try again.\n" ;
+        cout << "Invalid Course ID. Please try again.\n" ;
     }
     return id ;
 }
@@ -42,7 +42,7 @@ int Course::read_id ( User * ptr )
         id = read_id () ;
         if ( id == -1 ) return -1 ;
         if ( Course::get_pointer( id )->had_a_permission ( ptr ) ) break;
-        cout << "You dont Register at this Course , Please try again after Register or Try Other Course.\n" ;
+        cout << "Access denied: You are not registered for this course. Please register first or try another course.\n" ;
     }
     return id ;
 }
@@ -82,18 +82,28 @@ void Course::change_creditHoure ( int creditHoure ) { this->creditHoure = credit
 void Course::print_all_Courses ( )
 {
     cout << "\n==================== COURSES ====================\n" ;
-    cout << "There are " << CourseTable.size() << " Courses in the system.\n" ;
+    cout << "Total Courses in System: " << CourseTable.size() << "\n" ;
+    cout << "==================================================\n" ;
 
-    for ( const auto & [ id , ptr ] : CourseTable )
-        ptr->print_curr_course( ) ;
+    if ( CourseTable.empty() )
+    {
+        cout << "No courses available in the system.\n" ;
+    }
+    else
+    {
+        for ( const auto & [ id , ptr ] : CourseTable )
+            ptr->print_curr_course( ) ;
+    }
     
-    cout << "================================================\n\n" ;
+    cout << "==================================================\n\n" ;
 }
 
 void Course::print_curr_course ( )
 {
-    cout << "  Course ID: " << id << " | Course: " << name << " | Code: " << code ;
+    cout << "  Course ID: " << id << " | Name: " << name << " | Code: " << code ;
     cout << " | Credits: " << creditHoure << "\n" ;
+    cout << "  Description: " << descreption << "\n" ;
+    cout << "  --------------------------------------------------\n" ;
 }
 
 void Course::print_all_doctors ( )
@@ -101,7 +111,8 @@ void Course::print_all_doctors ( )
     cout << "\n================== DOCTORS ==================\n" ;
     if ( UsertTable[0].size() > 0 )
     {
-        cout << "There are " << UsertTable[0].size() << " Doctor(s) for this Course.\n" ;
+        cout << "Total Doctors for this Course: " << UsertTable[0].size() << "\n" ;
+        cout << "----------------------------------------------\n" ;
 
         for ( const auto & [ name , ptr ] : UsertTable[0] )
         {
@@ -121,7 +132,8 @@ void Course::print_all_Students ( )
     cout << "\n================== STUDENTS ==================\n" ;
     if ( UsertTable[1].size() > 0 )
     {
-        cout << "There are " << UsertTable[1].size() << " Student(s) for this Course.\n" ;
+        cout << "Total Students for this Course: " << UsertTable[1].size() << "\n" ;
+        cout << "-----------------------------------------------\n" ;
 
         for ( const auto & [ name , ptr ] : UsertTable[1] )
         {
@@ -139,11 +151,20 @@ void Course::print_all_Students ( )
 void Course::print_all_Assignment ( User * user_ptr )
 {
     cout << "\n================ ASSIGNMENTS ================\n" ;
-    cout << "There are " << AssignmentTable.size() << " Assignment(s) for this Course.\n" ;
-
-    for ( const auto & [ id , ptr ] : AssignmentTable )
+    if ( AssignmentTable.size() > 0 )
     {
-        ptr->print_self( user_ptr ) ;
+        cout << "Total Assignments for this Course: " << AssignmentTable.size() << "\n" ;
+        cout << "----------------------------------------------\n" ;
+
+        for ( const auto & [ id , ptr ] : AssignmentTable )
+        {
+            ptr->print_self( user_ptr ) ;
+            cout << "----------------------------------------------\n" ;
+        }
+    }
+    else 
+    {
+        cout << "No assignments available for this course.\n" ;
     }
     
     cout << "==============================================\n" ;
@@ -163,11 +184,20 @@ void Course::add_Assignment ( Assignment * ptr )
 
 void Course::Print_Assignments ( )
 {
-    for ( const auto & [ id , ptr ] : AssignmentTable )
+    cout << "\n============== ASSIGNMENT LIST ==============\n" ;
+    if ( AssignmentTable.empty() )
     {
-        cout << "ID : " << id << "\n" ;
-        cout << "Q : " << ptr->get_question() << "\n" ;
+        cout << "No assignments available for this course.\n" ;
     }
+    else
+    {
+        for ( const auto & [ id , ptr ] : AssignmentTable )
+        {
+            cout << "ID: " << id << " | Question: " << ptr->get_question() << "\n" ;
+            cout << "----------------------------------------------\n" ;
+        }
+    }
+    cout << "==============================================\n" ;
 }
 
 void Course::Review_Assignments()
@@ -196,9 +226,9 @@ void Course::submit_assignment ( int user_id )
 
     Assignment * ptr = Assignment::get_pointer( id ) ;
 
-    ptr->add_user_answer( user_id , read_string( "Enter Your Answer : " ) ) ;
+    ptr->add_user_answer( user_id , read_string( "Enter Your Answer: " ) ) ;
 
-    cout << "Assignment had been successfully.\n" ;
+    cout << "Assignment submitted successfully.\n" ;
 }
 
 void Course::delete_User ( User * ptr )

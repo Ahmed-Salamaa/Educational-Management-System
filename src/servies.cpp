@@ -6,7 +6,7 @@
 
 bool Services::sign_in ()
 {
-    if ( is_log_in() ) { cout << ( "You cant sign in , there are a User Log in !" ) ; exit (1) ; }
+    if ( is_log_in() ) { cout << "Error: Cannot sign in. A user is already logged in.\n" ; exit (1) ; }
 
     int id = User::read_id() ;
     if ( id == -1 ) return 0 ;
@@ -17,19 +17,19 @@ bool Services::sign_in ()
     while ( true )
     {
         if ( password == "-1" ) return 0 ;
-        password = read_string( "Enter Your Password : " ) ;
+        password = read_string( "Enter Your Password: " ) ;
         if ( temp->login( password ) ) break ;
         cout << "Incorrect password. Please try again.\n" ;
     }
     
     curr_user = temp ;
-    cout << "Login successful. Welcome : " << curr_user->get_name() << " !\n" ;
+    cout << "Login successful. Welcome, " << curr_user->get_name() << "!\n" ;
     return 1 ;
 }
 
 bool Services::sign_up ()
 {
-    if ( is_log_in() ) {cout << "You cant sign up , there are a User Log in !" ; exit(1) ; }
+    if ( is_log_in() ) {cout << "Error: Cannot sign up. A user is already logged in.\n" ; exit(1) ; }
 
     string username = read_username() ;
     if ( username.empty() ) return 0 ;
@@ -50,7 +50,7 @@ bool Services::sign_up ()
     if ( type == 1 ) temp = new Doctor ( username , password , email , name , type ) ;
     else temp = new Student ( username , password , email , name , type ) ;
 
-    cout << "Your account with ID : " << temp->get_id() << " successfully created.\n" ;
+    cout << "Account created successfully with ID: " << temp->get_id() << "\n" ;
     cout << "Please login with your new account.\n" ;
     return 1 ;
 }
@@ -113,8 +113,8 @@ void Services::main_menu ()
         {
             "List All Courses" ,
             "Create New Course" ,
-            "Join at New Course" ,
-            "Mange My Courses" ,
+            "Join New Course" ,
+            "Manage My Courses" ,
             "User Menu" ,
             "Log Out"
         } ;
@@ -144,7 +144,7 @@ void Services::main_menu ()
                 if ( creditHoure == -1 ) break ;
 
                 auto tt = new Course ( name , code , descreption , creditHoure , curr_user ) ;
-                cout << "New course with ID : " << tt->get_id() << " has been created successfully." ;
+                cout << "New course with ID: " << tt->get_id() << " has been created successfully.\n" ;
 
                 main_menu() ;
                 break;
@@ -177,7 +177,7 @@ void Services::main_menu ()
         {
             "List All Courses" ,
             "Register in a New Course" ,
-            "Mange My Courses" ,
+            "Manage My Courses" ,
             "User Menu" ,
             "Log Out"
         } ;
@@ -224,12 +224,12 @@ void Services::user_menu ()
     vector <string> menu = 
     {
         "Change Name" ,
-        "Change User Name" ,
+        "Change Username" ,
         "Change Email" ,
-        "Change password" ,
+        "Change Password" ,
         "Delete User" ,
         "User Data" ,
-        "Return to Main menu"
+        "Return to Main Menu"
     } ;
 
     int type = print_menu( menu ) ;
@@ -240,34 +240,47 @@ void Services::user_menu ()
         {    
             string name = read_name () ;
             if ( name.empty() ) user_menu() ;
-            else curr_user->change_name ( name ) ;
+            else {
+                curr_user->change_name ( name ) ;
+                cout << "Name updated successfully.\n" ;
+            }
             break;
         }
         case 2:
         {    
             string username = read_username () ;
             if ( username.empty() ) user_menu() ;
-            else curr_user->change_username ( username ) ;
+            else {
+                curr_user->change_username ( username ) ;
+                cout << "Username updated successfully.\n" ;
+            }
             break;
         }
         case 3 :
         {   
             string email = read_email () ;
             if ( email.empty() ) user_menu() ;
-            else curr_user->change_email ( email ) ;
+            else {
+                curr_user->change_email ( email ) ;
+                cout << "Email updated successfully.\n" ;
+            }
             break;
         }
         case 4 :
         {    
             string password = read_password () ;
             if ( password.empty() ) user_menu() ;
-            else curr_user->change_password( password ) ;
+            else {
+                curr_user->change_password( password ) ;
+                cout << "Password updated successfully.\n" ;
+            }
             break;
         }
         case 5 :
         {
             delete curr_user ;
-            cout << "User Had been deleted successfully\n" ;
+            cout << "User deleted successfully.\n" ;
+            return ;
         }
         case 6 :
         {
@@ -289,8 +302,8 @@ void Services::courses_menu ()
     vector <string> menu = 
     {
         "List My Courses" ,
-        "Select Course to edit " ,
-        "Return to Main menu"
+        "Select Course to Edit" ,
+        "Return to Main Menu"
     } ;
 
     int type = print_menu( menu ) ;

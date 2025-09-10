@@ -23,10 +23,10 @@ int User::read_id ()
     int id ;
     while ( true )
     {
-        id = read_int ( "Enter Your ID : " ) ;
+        id = read_int ( "Enter Your ID: " ) ;
         if ( id == -1 ) return -1 ;
         if ( User::used_id( id ) ) break;
-        cout << "Invaild ID. Please try again.\n" ;
+        cout << "Invalid ID. Please try again.\n" ;
     }
     return id ;
 }
@@ -78,8 +78,19 @@ void User::add_course ( Course * ptr )
 
 void User::print_my_course ()
 {
-    for ( const auto & [ name , ptr ] : CourseTable ) 
-        ptr->print_curr_course() ;
+    cout << "\n=============== MY COURSES ===============\n" ;
+    if ( CourseTable.empty() )
+    {
+        cout << "You are not enrolled in any courses.\n" ;
+    }
+    else
+    {
+        cout << "Total Enrolled Courses: " << CourseTable.size() << "\n" ;
+        cout << "-------------------------------------------\n" ;
+        for ( const auto & [ name , ptr ] : CourseTable ) 
+            ptr->print_curr_course() ;
+    }
+    cout << "==========================================\n" ;
 }
 
 
@@ -93,24 +104,39 @@ void User::print_my_Assignment ()
 
 void User::Assignment_Report ( Course * Course_ptr )
 {
+    cout << "\n============== ASSIGNMENT REPORT ==============\n" ;
+    cout << "Course: " << Course_ptr->get_name() << " (" << Course_ptr->get_code() << ")\n" ;
+    cout << "------------------------------------------------\n" ;
+    
     int user_degree = 0 , Totall = 0 ;
+    int assignment_count = 0 ;
+    
     for ( auto & [ id , ptr ] : AssignmentTable[0] )
     {
         if ( Course_ptr->get_id() != ptr->get_course_id() ) continue;
-        cout << "Assignment ID : " << ptr->get_id() << " , Assignment Degree : " << ptr->get_user_degree( get_id() ) << " / " << ptr->get_degree() << "\n" ;
+        cout << "Assignment ID: " << ptr->get_id() << " | Score: " << ptr->get_user_degree( get_id() ) << " / " << ptr->get_degree() << "\n" ;
         user_degree += ptr->get_user_degree( get_id() ) ;
         Totall += ptr->get_degree() ;
+        assignment_count++ ;
     }
 
     for ( auto & [ id , ptr ] : AssignmentTable[1] )
     {
         if ( Course_ptr->get_id() != ptr->get_course_id() ) continue;
-        cout << "Assignment ID : " << ptr->get_id() << " , Assignment Degree : " << ptr->get_user_degree( get_id() ) << " / " << ptr->get_degree() << "\n" ;
+        cout << "Assignment ID: " << ptr->get_id() << " | Score: " << ptr->get_user_degree( get_id() ) << " / " << ptr->get_degree() << "\n" ;
         user_degree += ptr->get_user_degree( get_id() ) ;
         Totall += ptr->get_degree() ;
+        assignment_count++ ;
     }
-
-    cout << "Course Degree : " << user_degree << " / " << Totall << "\n" ;
+    
+    cout << "------------------------------------------------\n" ;
+    if ( assignment_count > 0 ) {
+        cout << "Total Course Score: " << user_degree << " / " << Totall ;
+        cout << " (" << (double)user_degree/Totall*100 << "%)\n" ;
+    } else {
+        cout << "No assignments found for this course.\n" ;
+    }
+    cout << "===============================================\n" ;
 }
 
 
@@ -125,6 +151,7 @@ void User::register_course ()
     CourseTable[ ptr->get_id() ] = ptr ;
 
     ptr->add_User( this ) ;
+    cout << "Successfully registered for the course.\n" ;
 }
 
 void User::delete_course ( int id )
@@ -141,18 +168,32 @@ void User::delete_Assignment ( int id )
 void User::print_all_User ( )
 {
     cout << "\n==================== USERS ====================\n" ;
-    cout << "There are " << UserTable.size() << " User(s) in the system.\n" ;
+    if ( UserTable.empty() )
+    {
+        cout << "No users in the system.\n" ;
+    }
+    else
+    {
+        cout << "Total Users in System: " << UserTable.size() << "\n" ;
+        cout << "------------------------------------------------\n" ;
 
-    for ( const auto & [ name , ptr ] : UserTable )
-        ptr->print_self( ) ;
+        for ( const auto & [ name , ptr ] : UserTable )
+            ptr->print_self( ) ;
+    }
     
     cout << "================================================\n\n" ;
 }
 
 void User::print_self ( )
 {
-    cout << "  User: " << username << " | ID: " << id << " | Type: " << ( type ? "Student" : "Doctor" ) << "\n" ;
-    cout << "  Name: " << name << " | Email: " << email << "\n" ;
+    cout << "  User: " << username << " | ID: " << id << " | Type: " << ( type == 1 ? "Doctor" : "Student" ) << "\n" ;
+    cout << "  Name: " ;
+    for ( int i = 0 ; i < name.size() ; i++ ) {
+        cout << name[i] ;
+        if ( i < name.size() - 1 ) cout << " " ;
+    }
+    cout << " | Email: " << email << "\n" ;
+    cout << "  --------------------------------------------------\n" ;
 }
 
 User::~User ()

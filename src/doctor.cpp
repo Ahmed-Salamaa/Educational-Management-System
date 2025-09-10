@@ -14,7 +14,7 @@ void Doctor::edit_course( int id )
 void Doctor::edit_course( Course * ptr ) 
 {
     if (ptr == nullptr) {
-        cout << "Invalid course ID!" << endl;
+        cout << "Error: Invalid course pointer. Course not found.\n";
         return;
     }
 
@@ -22,13 +22,13 @@ void Doctor::edit_course( Course * ptr )
     {
         "Edit Course Name" ,
         "Edit Course Code" ,
-        "Edit Course Descreption" ,
-        "Edit Course creditHoure" ,
+        "Edit Course Description" ,
+        "Edit Course Credit Hours" ,
         "Add Assignment" ,
-        "Review The Assignments" ,
-        "List all Students at course" ,
+        "Review Assignments" ,
+        "List All Students in Course" ,
         "Delete Course" ,
-        "Return to Main menu"
+        "Return to Main Menu"
     } ;
 
     int type = print_menu( menu ) ;
@@ -38,36 +38,49 @@ void Doctor::edit_course( Course * ptr )
         case 1 :
         {    
             string name = read_name() ;
-            ptr->change_name( name ) ;
+            if ( name != "-1" ) {
+                ptr->change_name( name ) ;
+                cout << "Course name updated successfully.\n" ;
+            }
             break;
         }
         case 2 :
         {
             string code = read_code() ;
-            ptr->change_code( code ) ;
+            if ( code != "-1" ) {
+                ptr->change_code( code ) ;
+                cout << "Course code updated successfully.\n" ;
+            }
             break;
         }
         case 3 :
         {
             string descreption = read_descreption() ;
-            ptr->change_descreption( descreption ) ;
+            if ( descreption != "-1" ) {
+                ptr->change_descreption( descreption ) ;
+                cout << "Course description updated successfully.\n" ;
+            }
             break;
         }
         case 4 :
         {
             int creditHoure = read_creditHoure() ;
-            ptr->change_creditHoure( creditHoure ) ;
+            if ( creditHoure != -1 ) {
+                ptr->change_creditHoure( creditHoure ) ;
+                cout << "Course credit hours updated successfully.\n" ;
+            }
             break;
         }
         case 5 :
         {
-            string question = read_string( "Enter the question : " ) ;
+            string question = read_string( "Enter the question: " ) ;
             if ( question == "-1" ) return ;
 
-            int degree = read_int( "Enter the degree at range ( 1 , 100 ) : " , 1 , 100 ) ;
+            int degree = read_int( "Enter the degree in range (1, 100): " , 1 , 100 ) ;
             if ( degree == -1 ) return ;
 
             new Assignment ( ptr , degree , question ) ;
+            cout << "Assignment created successfully.\n" ;
             break;
         }
         case 6 :
@@ -81,7 +94,7 @@ void Doctor::edit_course( Course * ptr )
         case 8 :
         {
             delete ptr ;
-            cout << "Course had been deleted successfully\n" ;
+            cout << "Course deleted successfully.\n" ;
             return ;
         }
         default:
