@@ -14,7 +14,7 @@ void Student::edit_course( int id )
 void Student::edit_course( Course * ptr ) 
 {
     if (ptr == nullptr) {
-        // Handle the error, e.g., by logging or throwing an exception
+        cout << "Error: Invalid course pointer. Course not found.\n";
         return;
     }
 
@@ -22,8 +22,8 @@ void Student::edit_course( Course * ptr )
     {
         "Submit Assignment" ,
         "Unregister from Course" ,
-        "Grades Report" ,
-        "Return to Main menu"
+        "View Grades Report" ,
+        "Return to Main Menu"
     } ;
 
     int type = print_menu( menu ) ;
@@ -33,13 +33,13 @@ void Student::edit_course( Course * ptr )
         case 1 :
         {    
             ptr->submit_assignment( get_id() ) ;
+            edit_course( ptr ) ;
             break;
         }
         case 2 :
         {
-            
             ptr->delete_User( this ) ;
-
+            cout << "Successfully unregistered from the course.\n" ;
             break;
         }
         case 3 :
