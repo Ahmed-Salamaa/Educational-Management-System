@@ -46,7 +46,6 @@ class Assignment
         
         void delete_User ( User * ptr ) ;
 
-        void print_user_assignment( User * ptr ) ;
         int read_user_id() ;
 
         void Give_degree ( int user_id , int degree ) ;

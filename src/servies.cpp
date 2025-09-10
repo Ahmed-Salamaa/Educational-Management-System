@@ -114,8 +114,7 @@ void Services::main_menu ()
             "List All Courses" ,
             "Create New Course" ,
             "Join at New Course" ,
-            "List My Courses" ,
-            "Edit Courses" ,
+            "Mange My Courses" ,
             "User Menu" ,
             "Log Out"
         } ;
@@ -157,16 +156,11 @@ void Services::main_menu ()
                 break;
             
             case 4 :
-                
-                curr_user->print_my_course() ;
-                main_menu() ;
-                break;
-            case 5 :
 
                 courses_menu() ;
                 main_menu() ;
                 break;
-            case 6 :
+            case 5 :
                 user_menu() ;
                 main_menu() ;
                 break;
@@ -183,8 +177,7 @@ void Services::main_menu ()
         {
             "List All Courses" ,
             "Register in a New Course" ,
-            "List My Courses" ,
-            "Edit Courses" ,
+            "Mange My Courses" ,
             "User Menu" ,
             "Log Out"
         } ;
@@ -206,16 +199,11 @@ void Services::main_menu ()
                 break;
             }
             case 3 :
-                
-                curr_user->print_my_course() ;
-                main_menu() ;
-                break;
-            case 4 :
 
                 courses_menu() ;
                 main_menu() ;
                 break;
-            case 5 :
+            case 4 :
                 user_menu() ;
                 main_menu() ;
                 break;
@@ -300,6 +288,7 @@ void Services::courses_menu ()
 {
     vector <string> menu = 
     {
+        "List My Courses" ,
         "Select Course to edit " ,
         "Return to Main menu"
     } ;
@@ -308,15 +297,23 @@ void Services::courses_menu ()
 
     switch ( type )
     {
-    case 1 :
-    {
-        int id = Course::read_id( curr_user ) ;
-        if ( id == -1 ) break;
-        curr_user->edit_course( id ) ;
-        break;
-    }
-    default:
-        break;
+        case 1 :
+        {
+                            
+            curr_user->print_my_course() ;
+            courses_menu () ;
+            break;
+        }
+        case 2 :
+        {
+            int id = Course::read_id( curr_user ) ;
+            if ( id == -1 ) break;
+            curr_user->edit_course( id ) ;
+            courses_menu () ;
+            break;
+        }
+        default:
+            break;
     }
 }
 

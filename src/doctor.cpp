@@ -80,10 +80,9 @@ void Doctor::edit_course( Course * ptr )
         }
         case 8 :
         {
-            int id = Course::read_id() ;
-            delete Course::get_pointer(id) ;
+            delete ptr ;
             cout << "Course had been deleted successfully\n" ;
-            break;
+            return ;
         }
         default:
             return ;

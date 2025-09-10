@@ -111,7 +111,7 @@ int Assignment::read_user_id()
     {
         id = User::read_id() ;
         if ( id == -1 ) return -1 ;
-        if ( used_id( id ) ) break;
+        if ( answers.count(id) ) break;
         cout << "Student Dosen't submitted an Answer. Please try again.\n" ;
     }
     return id ;
