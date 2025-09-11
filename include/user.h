@@ -36,12 +36,13 @@ class User
 
     public:        
 
-        User ( const string & username , const string & password , const string & email , const string & name , const int & type ) ;
+        User ( const string & username , const string & password , const string & email , const string & name , const int & type , int id = -1 ) ;
 
         static int read_id () ;
 
         const string & get_username () ;
         const string & get_email () ;
+        const string & get_password () ;
         const vector < string > & get_name () ;
         const int & get_id () ;
         // Doctor: 1 , Student: 2 
@@ -69,6 +70,11 @@ class User
         bool login ( string pass ) ;
 
         void print_self ( ) ;
+
+        static void delete_all () ;
+        static void Data_Base_Save ( ofstream & out ) ;
+        static void Data_Base_Load ( ifstream & in ) ;
+
 
         ~User () ;
 };

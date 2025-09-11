@@ -21,7 +21,7 @@ class Assignment
 
     public:
 
-        Assignment ( Course * ptr , int degree , string question ) ;
+        Assignment ( Course * ptr , int degree , string question , int id = -1 ) ;
 
         static int read_id () ;
         static bool used_id ( int id ) ;
@@ -50,6 +50,10 @@ class Assignment
 
         void Give_degree ( int user_id , int degree ) ;
         void menu ( ) ;
+
+        static void delete_all () ;
+        static void Data_Base_Save ( ofstream & out ) ;
+        static void Data_Base_Load ( ifstream & in ) ;
 
 
         ~Assignment() ;

@@ -217,6 +217,7 @@ void Course::add_User ( User * ptr )
     }
     
     UsertTable[ ptr->get_type() - 1 ][ ptr->get_id() ] = ptr ;
+    ptr->add_course( this ) ;
 }
 
 void Course::submit_assignment ( int user_id )
@@ -259,4 +260,94 @@ Course::~Course()
 
     // Remove this course from CourseTable
     CourseTable.erase( this->id ) ;
+}
+
+
+void Course::Data_Base_Save ( ofstream & out )
+{
+    out << id_cnt << " " << CourseTable.size() << "\n" ;
+    for ( const auto & [ id , ptr ] : CourseTable )
+    {
+        out << ptr->get_id() << "," ;
+        out << ptr->get_creditHoure() << "," ;
+        out << ptr->get_name() << "," ;
+        out << ptr->get_code() << "," ;
+        out << ptr->get_descreption() << "," ;
+        
+        out << ptr->UsertTable[0].size() << "\n" ;
+        for ( const auto & [ user_id , user_ptr ] : ptr->UsertTable[0] )
+        {
+            out << user_id << "," ;
+        }
+        out << "\n" ;
+
+        out << ptr->UsertTable[1].size() << "\n" ;
+        for ( const auto & [ user_id , user_ptr ] : ptr->UsertTable[1] )
+        {
+            out << user_id << "," ;
+        }
+        out << "\n" ;
+
+        out << ptr->AssignmentTable.size() << "\n" ;
+        for ( const auto & [ assign_id , assign_ptr ] : ptr->AssignmentTable )
+        {
+            out << assign_id << "," ;
+        }
+        out << "\n" ;
+    }
+}
+
+void Course::delete_all ()
+{
+    for ( const auto & [ id , ptr ] : CourseTable )
+    {
+        if ( ptr != nullptr ) delete ptr ;
+    }
+}
+
+void Course::Data_Base_Load ( ifstream & in )
+{
+    delete_all () ;
+
+    CourseTable.clear() ;
+
+    int n ;
+    in >> id_cnt >> n ;
+    in.ignore() ;
+
+    while ( n -- )
+    {
+        string id ; getline ( in , id , ',' ) ;
+        string creditHoure ; getline ( in , creditHoure , ',' ) ;
+        string name ; getline ( in , name , ',' ) ;
+        string code ; getline ( in , code , ',' ) ;
+        string descreption ; getline ( in , descreption , ',' ) ;
+
+        Course * ptr = new Course ( name , code , descreption , stoi(creditHoure) , nullptr ) ;
+        ptr->id = stoi(id) ;
+        
+        int m ; in >> m ;
+        in.ignore() ;
+        for ( int i = 0 ; i < m ; i ++ )
+        {
+            int temp ; in >> temp ;
+            ptr->add_User( User::get_pointer( temp ) ) ;
+        }
+        
+        in >> m ;
+        in.ignore() ;
+        for ( int i = 0 ; i < m ; i ++ )
+        {
+            int temp ; in >> temp ;
+            ptr->add_User( User::get_pointer( temp ) ) ;
+        }
+        
+        in >> m ;
+        in.ignore() ;
+        for ( int i = 0 ; i < m ; i ++ )
+        {
+            int temp ; in >> temp ;
+            ptr->add_Assignment( Assignment::get_pointer( temp ) ) ;
+        }
+    }
 }

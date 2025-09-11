@@ -2,6 +2,7 @@
 #define HELP_FUNCTION
 
 #include "include/picosha2.h"
+#include <filesystem>
 
 #include <regex>
 #include <iostream>
@@ -14,6 +15,7 @@
 #include <stdexcept>
 #include <cctype>
 using namespace std;
+namespace fs = std::filesystem;
 
 ostream& operator << (ostream &out, const vector < string > &v) ;
 

@@ -6,13 +6,16 @@
     map < int , User * > User::UserTable ;
     int User::id_cnt = 1'000'000'0 ;
 
-User::User ( const string & username , const string & password , const string & email , const string & name , const int & type )
+User::User ( const string & username , const string & password , const string & email , const string & name , const int & type , int id )
 {
     this->username = username ;
     this->password = hash_string ( password ) ;
     this->email = email ;
     this->type = type ;
-    this->id = id_cnt ++ ;
+
+    if ( id != -1 ) this->id = id ;
+    else this->id = id_cnt ++ ;
+    
     change_name ( name ) ;
 
     UserTable[this->id] = this ;
@@ -34,6 +37,8 @@ int User::read_id ()
 const string & User::get_username () { return username ; }
 
 const string & User::get_email () { return email ; }
+
+const string & User::get_password () { return password ; }
 
 const vector < string > & User::get_name () { return name ; }
 
@@ -215,4 +220,59 @@ User::~User ()
 
     UserTable.erase( id ) ;
 
+}
+
+void User::Data_Base_Save ( ofstream & out )
+{
+    out << id_cnt << " " << UserTable.size() << "\n" ;
+    for ( const auto & [ id , ptr ] : UserTable )
+    {
+        out << ptr->get_id() << "," ;
+        out << ptr->get_email() << "," ;
+        out << ptr->get_password() << "," ;
+        for ( int i = 0 ; i < ptr->get_name().size() ; i ++ ) 
+        {
+            out << ptr->get_name()[i] ;
+            if ( i < ptr->get_name().size() - 1 ) out << " " ;
+        }
+        out << "," ;
+        out << ptr->get_type() << "," ;
+        out << ptr->get_username() << "\n" ;
+    }
+}
+
+void User::Data_Base_Load ( ifstream & in )
+{
+    for ( const auto & [ id , ptr ] : UserTable )
+    {
+        if ( ptr != nullptr ) delete ptr ;
+    }
+
+    UserTable.clear() ;
+
+    int n ;
+    in >> id_cnt >> n ;
+    in.ignore() ;
+
+    while ( n -- )
+    {
+        string id ; getline ( in , id , ',' ) ;
+        string email ; getline ( in , email , ',' ) ;
+        string password ; getline ( in , password , ',' ) ;
+        string name ; getline ( in , name , ',' ) ; 
+        string type ; getline ( in , type , ',' ) ; 
+        string username ; getline ( in , username , '\n' ) ;
+
+        User * ptr = new User ( username , "" , email , name , stoi( type ) , stoi( id ) ) ;
+        ptr->password = password ;
+    }
+}
+
+
+void User::delete_all ()
+{
+    for ( const auto & [ id , ptr ] : UserTable )
+    {
+        if ( ptr != nullptr ) delete ptr ;
+    }
 }

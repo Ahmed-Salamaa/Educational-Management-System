@@ -4,6 +4,18 @@
 #include "include/course.h"
 #include "include/assignment.h"
 
+
+Services::Services ()
+{
+    if ( !fs::exists("database") )
+        fs::create_directory( "database" ) ;
+
+    curr_user = nullptr ;
+
+    Data_Base_Load () ;
+
+}
+
 bool Services::sign_in ()
 {
     if ( is_log_in() ) { cout << "Error: Cannot sign in. A user is already logged in.\n" ; exit (1) ; }
@@ -333,4 +345,60 @@ void Services::courses_menu ()
 void Services::run ()
 {
     sign_menu() ;
+}
+
+        // static void Data_Base_Save ( ofstream & out ) ;
+        // static void Data_Base_Load ( ifstream & in ) ;
+
+void Services::Data_Base_Save ()
+{
+    remove( user_path.c_str() ) ;
+    remove( course_path.c_str() ) ;
+    remove( assignment_path.c_str() ) ;
+
+    ofstream user_stream ( user_path.c_str() ) ;
+    ofstream course_stream ( course_path.c_str() ) ;
+    ofstream assignment_stream ( assignment_path.c_str() ) ;
+    
+    
+    User::Data_Base_Save( user_stream ) ;
+    Course::Data_Base_Save( course_stream ) ;
+    Assignment::Data_Base_Save( assignment_stream ) ;
+}
+
+void Services::Data_Base_Load ()
+{
+    int curr_id = -1 ;
+    if ( curr_user != nullptr ) curr_id = curr_user->get_id() ;
+    curr_user = nullptr ;
+
+    ifstream user_stream ( user_path.c_str() ) ;
+    ifstream course_stream ( course_path.c_str() ) ;
+    ifstream assignment_stream ( assignment_path.c_str() ) ;
+
+    if ( user_stream.fail() || course_stream.fail() || assignment_stream.fail() )
+    {
+        cout << "Fail at load database !!\n" ;
+        if ( user_stream.fail() ) cout << "\tUser path not found\n" ;
+        if ( course_stream.fail() ) cout << "\tCourse path not found\n" ;
+        if ( assignment_stream.fail() ) cout << "\tAssignment path not found\n" ;
+        cout << "System will start from Zero\n\n" ;
+        return ;
+    }
+
+    User::Data_Base_Load( user_stream ) ;
+    Course::Data_Base_Load( course_stream ) ;
+    Assignment::Data_Base_Load( assignment_stream ) ;
+
+    if ( curr_id != -1 && User::used_id( curr_id ) ) curr_user = User::get_pointer( curr_id ) ;
+    else curr_user = nullptr ;
+}
+
+Services::~Services ()
+{
+    Data_Base_Save () ;
+
+    // User::delete_all() ;
+    // Course::delete_all() ;
+    // Assignment::delete_all() ;
 }
