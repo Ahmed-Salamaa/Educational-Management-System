@@ -65,6 +65,11 @@ class Course
         void delete_User ( User * ptr ) ;
         void delete_User_Assignment ( User * ptr ) ;
 
+        static void delete_all () ;
+
+        static void Data_Base_Save ( ofstream & out ) ;
+        static void Data_Base_Load ( ifstream & in ) ;
+
         ~Course() ;
 
         

@@ -6,16 +6,18 @@
     int Assignment::id_cnt = 1'000'000'0 ;
     map < int , Assignment * > Assignment::AssignmentTable ;
 
-Assignment::Assignment ( Course * ptr , int degree , string question )
+Assignment::Assignment ( Course * ptr , int degree , string question , int id )
 {
 
     this->course_id = ptr->get_id() ;
     this->degree = degree ;
     this->question = question ;
-    this->id = id_cnt ++ ;
+
+    if ( id == -1 ) this->id = id_cnt ++ ;
+    else this->id = id ;
 
     ptr->add_Assignment( this ) ;
-    AssignmentTable[id] = this ;
+    AssignmentTable[this->id] = this ;
 }
 
 int Assignment::read_id ()
@@ -117,7 +119,7 @@ void Assignment::print_assignment ()
 
 void Assignment::Give_degree ( int user_id , int degree )
 {
-    answers[ id ].second = degree ;
+    answers[ user_id ].second = degree ;
 }
 
 int Assignment::read_user_id()
@@ -215,3 +217,69 @@ void Assignment::print_self ( User * user_ptr )
     }
 }
 
+void Assignment::Data_Base_Save ( ofstream & out )
+{
+    out << id_cnt << " " << AssignmentTable.size() << "\n" ;
+    for ( const auto & [ id , ptr ] : AssignmentTable )
+    {
+        out << ptr->get_id() << "," ;
+        out << ptr->get_course_id() << "," ;
+        out << ptr->get_degree() << "," ;
+        out << ptr->get_question() << "," ;
+        
+        out << ptr->answers.size() << "\n" ;
+        for ( const auto & [ user_id , ans ] : ptr->answers )
+        {
+            out << user_id << "," << ans.first << "," << ans.second << "\n" ;
+        }
+    }
+}
+
+void Assignment::Data_Base_Load ( ifstream & in )
+{
+    for ( const auto & [ id , ptr ] : AssignmentTable )
+    {
+        if ( ptr != nullptr ) delete ptr ;
+    }
+
+    AssignmentTable.clear() ;
+
+    int n ;
+    in >> id_cnt >> n ;
+    in.ignore() ;
+
+    while ( n -- )
+    {
+        string id ; getline ( in , id , ',' ) ;
+        string course_id ; getline ( in , course_id , ',' ) ;
+        string degree ; getline ( in , degree , ',' ) ;
+        string question ; getline ( in , question , ',' ) ;
+
+        Assignment * ptr = new Assignment ( Course::get_pointer( stoi ( course_id ) ) , stoi ( degree ) , question , stoi ( id ) ) ;
+        
+        int m ; in >> m ;
+        in.ignore() ;
+
+        while ( m -- )
+        {
+            string user_id_str ; getline( in , user_id_str , ',' ) ;
+            string user_ans ; getline( in , user_ans , ',' ) ;
+            string user_degree_str ; getline( in , user_degree_str , '\n' ) ;
+
+            int user_id = stoi( user_id_str ) ;
+            int user_degree = stoi( user_degree_str ) ;
+
+            ptr->add_user_answer( user_id , user_ans ) ;
+            ptr->Give_degree( user_id , user_degree ) ;
+        }
+    }
+}
+
+
+void Assignment::delete_all ()
+{
+    for ( const auto & [ id , ptr ] : AssignmentTable )
+    {
+        if ( ptr != nullptr ) delete ptr ;
+    }
+}
