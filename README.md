@@ -28,6 +28,9 @@ A comprehensive C++ console-based educational management system that facilitates
 - **Course Analytics**: Doctors can see all enrolled students and their performance
 - **Progress Tracking**: Real-time tracking of assignment submissions and grades
 
+### Data Saving Support
+- **Persistent Data Storage**: The project supports saving user, course, and assignment data to files, ensuring information is retained between sessions.
+
 ## 🏗️ System Architecture
 
 ### Core Classes
@@ -123,7 +126,6 @@ Login → Main Menu → Student Options:
 ### Prerequisites
 - C++ compiler with C++11 or later support
 - Git (for cloning the repository)
-- Make utility (optional)
 
 ### Clone Repository
 ```bash
@@ -172,6 +174,7 @@ The project includes VS Code configuration with:
 - **Persistent Sessions**: User data maintained during application runtime
 - **Relationship Tracking**: Complex relationships between users, courses, and assignments
 - **Dynamic Memory Management**: Efficient resource allocation and cleanup
+- **Data Saving Support**: System saves data to files, allowing recovery of users, courses, and assignments after program restarts.
 
 ### Validation & Error Handling
 - **Input Validation**: Comprehensive validation for all user inputs
